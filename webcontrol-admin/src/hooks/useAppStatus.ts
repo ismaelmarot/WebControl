@@ -1,13 +1,17 @@
-import { useSupabaseClient } from '@supabase/ssr'
+import { useState, useEffect } from 'react'
 
-type UseAppStatusReturn = {
+export interface UseAppStatusReturn {
   enabled: boolean | null
   loading: boolean
   error: Error | null
 }
 
-export const useAppStatus = (slug: string): UseAppStatusReturn => {
-  const supabase = useSupabaseClient()
+export interface UseAppStatusParams {
+  slug: string
+  supabase: any
+}
+
+export const useAppStatus = ({ slug, supabase }: UseAppStatusParams): UseAppStatusReturn => {
   const [enabled, setEnabled] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
@@ -25,14 +29,13 @@ export const useAppStatus = (slug: string): UseAppStatusReturn => {
           setError(supaError)
           setEnabled(null)
           setLoading(false)
-          // Fail-closed: if we can't query, show maintenance
           return
         }
 
         setEnabled(data?.enabled ?? null)
-      } catch (err: any) {
+      } catch (err) {
         console.error('Error fetching app status:', err)
-        setError(err)
+        setError(err instanceof Error ? err : new Error(String(err)))
         setEnabled(null)
       } finally {
         setLoading(false)

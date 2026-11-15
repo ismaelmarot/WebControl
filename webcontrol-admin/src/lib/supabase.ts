@@ -1,34 +1,12 @@
-import { createBrowserClient, type SupabaseClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 
+export const createClient = () => {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export function createClient(): SupabaseClient {
-  const url = import.meta.env.VITE_SUPABASE_URL
-  const key = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-  if (!url || !key) {
+  if (!supabaseUrl || !supabaseKey) {
     throw new Error('Missing Supabase environment variables')
   }
 
-  return createBrowserClient(url, key, {
-    global: {
-      fetch(options: RequestInfo, init: RequestInit) {
-        return window.fetch(options, init)
-      }
-    },
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      storage: window.localStorage
-    }
-  })
-}
-
-export type SupabaseSelectable = {
-  id: string
-  name: string
-  slug: string
-  description: string | null
-  url: string
-  enabled: boolean
-  updated_at: string
+  return createBrowserClient(supabaseUrl, supabaseKey)
 }

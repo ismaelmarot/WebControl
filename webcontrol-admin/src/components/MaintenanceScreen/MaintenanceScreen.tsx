@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useSupabaseClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase'
 
-export const MaintenanceScreen = ({ slug }: { slug: string }) => {
+type MaintenanceScreenProps = {
+  slug: string
+}
+
+export const MaintenanceScreen: React.FC<MaintenanceScreenProps> = ({ slug }) => {
+  const supabase = createClient()
   const [enabled, setEnabled] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = useSupabaseClient()
 
   useEffect(() => {
     const fetchStatus = async () => {

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSupabaseClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase'
 
 type ApplicationCardProps = {
   id: string
@@ -11,7 +11,7 @@ type ApplicationCardProps = {
 
 export const ApplicationCard = ({ id, name, slug, enabled, updated_at }: ApplicationCardProps) => {
   const [isToggling, setIsToggling] = useState(false)
-  const supabase = useSupabaseClient()
+  const supabase = createClient()
 
   const toggleEnabled = async () => {
     setIsToggling(true)
@@ -49,8 +49,7 @@ export const ApplicationCard = ({ id, name, slug, enabled, updated_at }: Applica
           <button
             onClick={toggleEnabled}
             disabled={isToggling}
-            className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-50"
-          >
+            className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded disabled:opacity-50">
             {isToggling ? 'Cambiando...' : enabled ? 'Desactivar' : 'Activar'}
           </button>
         </div>

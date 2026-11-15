@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
-import { useSupabaseClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase'
 import { ApplicationCard } from '@/components/ApplicationCard'
 
 export const Dashboard = () => {
-  const [apps, setApps] = useState<ApplicationCardProps[]>([])
+  const [apps, setApps] = useState<Array<{ id: string; name: string; slug: string; enabled: boolean; updated_at: string }>>([])
   const [loaded, setLoaded] = useState(false)
-  const supabase = useSupabaseClient()
+  const supabase = createClient()
 
   useEffect(() => {
     supabase.from('applications').select('*').then(({ data, error }) => {
       if (error) {
         console.error('Error fetching apps:', error)
       } else {
-        setApps(data as ApplicationCardProps[])
+        setApps(data as any)
       }
       setLoaded(true)
     })
@@ -42,7 +42,7 @@ export const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {apps.map((app) => (
-          <ApplicationCard key={app.id} app={app} />
+          <ApplicationCard key={app.id} id={app.id} name={app.name} slug={app.slug} enabled={app.enabled} updated_at={app.updated_at} />
         ))}
       </div>
     </div>

@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
-import { useSupabaseClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase'
 import { useNavigate } from 'react-router-dom'
 
 export const Login = () => {
-  const supabase = useSupabaseClient()
+  const supabase = createClient()
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   useEffect(() => {
-    const { data: { session} } = supabase.auth.getSession()
-
-    if (session) {
-      navigate('/')
-    }
+    supabase.auth.getSession().then(({ data }) => {
+      if (data?.session) {
+        navigate('/')
+      }
+    })
   }, [supabase, navigate])
 
   const login = async () => {
@@ -49,8 +49,7 @@ export const Login = () => {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              id="email"
-              email
+              defaultValue={email}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
               placeholder="tu@email.com"
@@ -62,7 +61,7 @@ export const Login = () => {
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              id="password"
+              defaultValue={password}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
               placeholder="••••••••"

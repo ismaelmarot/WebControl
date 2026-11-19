@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
-
-type MaintenanceScreenProps = {
-  slug: string
-}
+import type { MaintenanceScreenProps } from '@/types'
 
 export const MaintenanceScreen: React.FC<MaintenanceScreenProps> = ({ slug }) => {
   const supabase = createClient()
